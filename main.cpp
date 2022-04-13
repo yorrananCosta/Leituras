@@ -15,8 +15,6 @@ Leitura;
 
 void criar_arquivo()
 {
-    string nome_arquivo;
-    system("clear");
     ofstream arquivo ("arquivo.csv", ios::app);
     arquivo.open("arquivo.csv");
     if (!arquivo)
@@ -25,7 +23,7 @@ void criar_arquivo()
     }
     else
     {
-        cout << "Arquivo criado com sucesso!" << endl;
+        cout << "Arquivo criado com sucesso!" << endl;-
     }
     arquivo.close();  
 }
