@@ -5,10 +5,10 @@ using namespace std;
 
 typedef struct
 {
-    string nome_livro;
     int isbn_13;
     int isbn_10;
-    int paginas_livro;
+    string nome_lendo;
+    int paginas_lendo;
     int ano;
     string idioma;
     string autor;
@@ -38,31 +38,97 @@ void criar_arquivo()
  * 
  * @return int 
  */
+
+int contador_de_linhas(){
+    string linha;
+    int tamanho_linhas = 0;
+    ifstream arquivo("arquivo.csv");
+        if(!arquivo.is_open()) 
+        {
+            cout << "O arquivo não pode ser aberto" << endl;
+        }
+        while (getline(arquivo, linha))
+        {
+            tamanho_linhas++;
+        }
+    arquivo.close();
+
+    return tamanho_linhas;
+}
+
 void incluir_registro()
 {
-    ifstream arquivo;
-    arquivo.open ("arquivo.csv", ofstream::ate);
-    if (!arquivo)
+    string isbn_13_s;
+    string isbn_10_s;
+    string nome_lendo;
+    string paginas_lendo_s;
+    string ano_s;
+    string idioma;
+    string autor;
+    string editora;
+    string nota_s;
+    Leitura *lendo ;
+    int tamanho;
+    tamanho = contador_de_linhas();
+    lendo =  new (nothrow) Leitura[tamanho];;
+    ifstream arquivo("arquivo.csv");
+
+    if(!arquivo.is_open()) 
     {
-        //criar_arquivo();
+        cout << "Erro ao abrir o arquivo!" << '\n';
     }
-    else
+    int posicao=0;
+   
+    while(arquivo.peek()!=EOF)
     {
-        cout << "Arquivo aberto!" << endl;
+        cout << "include..." << endl;
+        getline(arquivo, isbn_13_s, ',');
+        getline(arquivo, isbn_10_s,',');
+        getline(arquivo, nome_lendo,',');
+        getline(arquivo, paginas_lendo_s,',');
+        getline(arquivo, ano_s,',');
+        getline(arquivo, idioma,',');
+        getline(arquivo, autor,',');
+        getline(arquivo, editora,',');
+        getline(arquivo, nota_s);
+
+        //note a conversao de string para inteiro (codigo) e string para float (preco)
+        lendo[posicao].isbn_13 = stoi(isbn_13_s);
+        lendo[posicao].isbn_10 = stoi(isbn_10_s);
+        lendo[posicao].nome_lendo = nome_lendo;
+        lendo[posicao].paginas_lendo = stoi(paginas_lendo_s);
+        lendo[posicao].ano = stoi(ano_s);
+        lendo[posicao].idioma = idioma;
+        lendo[posicao].editora = editora;
+        lendo[posicao].nota = stoi(nota_s);
+        posicao++;
+    
     }
 
+    for (int i = 0; i < tamanho; i++){
+
+        cout << lendo[i].isbn_13 << endl;
+        cout << lendo[i].isbn_10 << endl;
+        cout << lendo[i].nome_lendo << endl;
+        cout << lendo[i].paginas_lendo << endl;
+        cout << lendo[i].ano << endl;
+        cout << lendo[i].idioma << endl;        
+        cout << lendo[i].editora << endl;
+        cout << lendo[i].nota << endl;
+
+    }
 }
 /*
 void excluir_registro()
 {
 }
-void buscar_livro()
+void buscar_lendo()
 {
 }
 void editar_leitura()
 {
 }
-*/
+
 int mostrar_registro()
 {
     string linha;
@@ -79,7 +145,7 @@ int mostrar_registro()
     arquivo.close();
     return 0;
 }
-/*
+
 void exportar_txt()
 {
 }
@@ -92,32 +158,13 @@ void menu()
 {
     int selecao;
     cout << "1) Incluir Registro" << endl;
-    cout << "2) Buscar Livro" << endl;
+    cout << "2) Buscar lendo" << endl;
     cout << "3) Editar Leitura" << endl;
     cout << "4) Mostrar Registro" << endl;
     cout << "5) Exportar para .txt" << endl;
     cout << "6) Excluir este arquivo" << endl;
     cin >> selecao;
-    switch(selecao)
-    {
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        case 5:
-            mostrar_registro();
-            break;
-        case 6:
-            break;
-        case 7:
-            break;
-        default:
-    }
-    
+    incluir_registro();
 }
 
 int main()
