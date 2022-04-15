@@ -1,22 +1,25 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #define LIMITE 1000
 
 using namespace std;
+using std::stoi;
 
 typedef struct
 {
-    int isbn_13;
-    int isbn_10;
+    string isbn_13;
+    string isbn_10;
     string nome_lendo;
-    int paginas_lendo;
-    int ano;
+    string paginas_lendo;
+    string ano;
     string idioma;
     string autor;
     string editora;
-    int nota;
+    string nota;
 }
-Leitura;
+Leitura[LIMITE];
+
 
 int criar_arquivo()
 {
@@ -29,14 +32,8 @@ int criar_arquivo()
     arquivo.close();  
 }
 
-/**
- * @brief
- * Abaixo deve se inserir um linha de registro com o uso da struct 
- * 
- * @return int 
- */
-
-int contador_de_linhas(){
+int contador_de_linhas()
+{
     string linha;
     int tamanho_linhas = 0;
     ifstream arquivo("arquivo.csv");
@@ -53,9 +50,76 @@ int contador_de_linhas(){
     return tamanho_linhas;
 }
 
+void ler_registros(Leitura *livro, int tamanho)
+{
+    string isbn13;
+    string isbn10;
+    string nome_livro;
+    string paginas;
+    string ano_publicacacao;
+    string idioma;
+    string autor;
+    string nome_editora;
+    string nota;
+    int posicao = 0;
+    ifstream arquivo ("arquivo.csv", ios::in);
+    if(!arquivo.is_open()) 
+    {
+        cout << "Erro ao abrir o arquivo" << endl;
+    }
+
+    while(arquivo.peek()!=EOF){
+    
+    getline(arquivo, isbn13,',');
+    getline(arquivo, isbn10,',');
+    getline(arquivo, nome_livro,',');
+    getline(arquivo, paginas,',');
+    getline(arquivo, ano_publicacacao,',');
+    getline(arquivo, idioma,',');
+    getline(arquivo, autor,',');
+    getline(arquivo, nome_editora,',');
+    getline(arquivo, nota);
+
+
+    livro[posicao]->isbn_13 = isbn13;
+    livro[posicao]->isbn_10 = isbn10;
+    livro[posicao]->nome_lendo = nome_livro;
+    livro[posicao]->paginas_lendo = paginas;
+    livro[posicao]->ano = ano_publicacacao;
+    livro[posicao]->idioma = idioma;
+    livro[posicao]->autor = autor;
+    livro[posicao]->editora = nome_editora;
+    livro[posicao]->nota = nota;
+    posicao++;
+  
+  }
+
+}
+
+void mostrar_registros(Leitura *livro, int tamanho)
+{ 
+    ifstream arquivo ("arquivo.csv", ios::in);
+    if(!arquivo.is_open()) 
+    {
+        cout << "Erro ao abrir o arquivo" << endl;
+    }
+    cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
+    for (int i = 0; i < tamanho; i++)
+    {
+        cout << livro[i]->isbn_13 << "  ";
+        cout << livro[i]->isbn_10 << "  ";
+        cout << livro[i]->nome_lendo << "  ";
+        cout << livro[i]->paginas_lendo << "  ";
+        cout << livro[i]->ano << "  ";
+        cout << livro[i]->idioma << "  ";
+        cout << livro[i]->autor << "  ";
+        cout << livro[i]->editora << "  ";
+        cout << livro[i]->nota << endl;
+    }
+}
+
 void incluir_registro()
 {
-    string linha;
     string isbn13;
     string isbn10;
     string nome_livro;
@@ -93,24 +157,7 @@ void incluir_registro()
     arquivo.close();
 }
 
-int mostrar_registro()
-{
-    string linha;
-    ifstream arquivo ("arquivo.csv");
-    if (!arquivo){
-        cout << "O arquivo nao pode ser aberto!" << endl;
-    return -1;
-    }
-    cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
-    while (!arquivo.eof()){
-        getline(arquivo, linha, ',');
-    cout << linha << "   ";
-    }
-    arquivo.close();
-    return 0;
-}
-
-void menu()
+void menu(Leitura *livro, int tamanho)
 {
     int selecao;
     cout << "1) Incluir Registro" << endl;
@@ -130,7 +177,7 @@ void menu()
     case 3:
         break;
     case 4:
-        mostrar_registro();
+        mostrar_registros(livro, tamanho);
         break;
     case 5:
         break;
@@ -143,7 +190,11 @@ void menu()
 
 int main()
 {
+    Leitura *livro;
+    int tamanho = contador_de_linhas();
+    livro =  new (nothrow) Leitura[tamanho];
     criar_arquivo();
-    menu();
+    ler_registros(livro, tamanho);
+    menu(livro, tamanho);
     return 0;
 }
