@@ -68,7 +68,8 @@ void ler_registros(Leitura *livro, int tamanho)
         cout << "Erro ao abrir o arquivo" << endl;
     }
 
-    while(arquivo.peek()!=EOF){
+    while(arquivo.peek()!=EOF)
+    {
     
     getline(arquivo, isbn13,',');
     getline(arquivo, isbn10,',');
@@ -95,6 +96,23 @@ void ler_registros(Leitura *livro, int tamanho)
   }
 
 }
+
+void salvar_alteracoes(Leitura *livro, int tamanho)
+{
+    ofstream arquivo ("arquivo.csv", ios::out);
+    for (int i = 0; i < tamanho; i++)
+    {
+        arquivo << livro[i]->isbn_13 << ','
+            << livro[i]->isbn_10 << ','
+            << livro[i]->nome_lendo << ','
+            << livro[i]->paginas_lendo << ','
+            << livro[i]->ano << ','
+            << livro[i]->idioma << ','
+            << livro[i]->autor << ','
+            << livro[i]->editora << ','
+            << livro[i]->nota << endl;
+    }
+}  
 
 void mostrar_registros(Leitura *livro, int tamanho)
 { 
@@ -157,11 +175,8 @@ void incluir_registro()
     arquivo.close();
 }
 
-int buscar_isbn_13(Leitura *livro, int tamanho)
+int buscar_isbn_13(Leitura *livro, int tamanho, string isbn_13)
 {
-    string isbn_13;
-    cout << "Digite o isbn 13 do livro que deseja pesquisar:" << endl;
-    cin >> isbn_13;
     for (int i = 0; i < tamanho; i++)
     {
         if(livro[i]->isbn_13 == isbn_13)
@@ -175,7 +190,10 @@ int buscar_isbn_13(Leitura *livro, int tamanho)
 
 void mostrar_pesquisa(Leitura *livro, int tamanho)
 {  
-    int posicao = buscar_isbn_13(livro, tamanho);
+    string isbn_13;
+    cout << "Digite o isbn 13 do livro que deseja pesquisar:" << endl;
+    cin >> isbn_13;
+    int posicao = buscar_isbn_13(livro, tamanho, isbn_13);
     cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
     cout << livro[posicao]->isbn_13 << "  ";
     cout << livro[posicao]->isbn_10 << "  ";
@@ -186,6 +204,64 @@ void mostrar_pesquisa(Leitura *livro, int tamanho)
     cout << livro[posicao]->autor << "  ";
     cout << livro[posicao]->editora << "  ";
     cout << livro[posicao]->nota << endl;
+}
+
+int alterar_item(Leitura *livro, int tamanho)
+{
+    int opcao, indice; 
+    string busca, alteracao;
+    cout << "Qual o ISBN 13 do livro que deseja alterar?" << endl;
+    cin >> busca;
+    indice = buscar_isbn_13(livro, tamanho, busca);
+    cout << "O que deseja alterar? (Digite o numero correspondente" << endl;
+    cout << "1) ISBN 13" << endl;
+    cout << "2) ISBN 10" << endl;
+    cout << "3) Nome do livro" << endl;
+    cout << "4) Páginas" << endl;
+    cout << "5) Ano de publicacao" << endl;
+    cout << "6) Idioma" << endl;
+    cout << "7) Autor" << endl;
+    cout << "8) Editora" << endl;
+    cout << "9) Nota" << endl;
+    cin >> opcao;
+    cout << "Qual o novo valor para o item?" << endl;
+    cin >> alteracao;
+    switch (opcao)
+    {
+    case 1:
+        livro[indice]->isbn_13 = alteracao;
+        break;
+    case 2:
+        livro[indice]->isbn_10 = alteracao;
+        break;
+    case 3:
+        livro[indice]->nome_lendo = alteracao;
+        break;
+    case 4:
+        livro[indice]->paginas_lendo = alteracao;
+        break;
+    case 5:
+        livro[indice]->ano = alteracao;
+        break;
+    case 6:
+        livro[indice]->idioma = alteracao;
+        break;
+    case 7:
+        livro[indice]->autor = alteracao;
+        break;
+    case 8:
+        livro[indice]->editora = alteracao;
+        break;
+    case 9:
+        livro[indice]->nota = alteracao;
+        break;
+
+    default:
+        return -1;
+        break;
+    }
+    salvar_alteracoes(livro, tamanho);
+    return 0;
 }
 
 void menu(Leitura *livro, int tamanho)
@@ -207,6 +283,7 @@ void menu(Leitura *livro, int tamanho)
         mostrar_pesquisa(livro, tamanho);
         break;
     case 3:
+        alterar_item(livro, tamanho);
         break;
     case 4:
         mostrar_registros(livro, tamanho);
@@ -214,6 +291,7 @@ void menu(Leitura *livro, int tamanho)
     case 5:
         break;
     case 6:
+
         break;
     default:
         break;
