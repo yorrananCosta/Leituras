@@ -157,6 +157,37 @@ void incluir_registro()
     arquivo.close();
 }
 
+int buscar_isbn_13(Leitura *livro, int tamanho)
+{
+    string isbn_13;
+    cout << "Digite o isbn 13 do livro que deseja pesquisar:" << endl;
+    cin >> isbn_13;
+    for (int i = 0; i < tamanho; i++)
+    {
+        if(livro[i]->isbn_13 == isbn_13)
+        {
+            return i;
+        }
+    }
+    cout << "Livro não encontrado" << endl;
+    return 1;
+}
+
+void mostrar_pesquisa(Leitura *livro, int tamanho)
+{  
+    int posicao = buscar_isbn_13(livro, tamanho);
+    cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
+    cout << livro[posicao]->isbn_13 << "  ";
+    cout << livro[posicao]->isbn_10 << "  ";
+    cout << livro[posicao]->nome_lendo << "  ";
+    cout << livro[posicao]->paginas_lendo << "  ";
+    cout << livro[posicao]->ano << "  ";
+    cout << livro[posicao]->idioma << "  ";
+    cout << livro[posicao]->autor << "  ";
+    cout << livro[posicao]->editora << "  ";
+    cout << livro[posicao]->nota << endl;
+}
+
 void menu(Leitura *livro, int tamanho)
 {
     int selecao;
@@ -173,6 +204,7 @@ void menu(Leitura *livro, int tamanho)
         incluir_registro();
         break;
     case 2:
+        mostrar_pesquisa(livro, tamanho);
         break;
     case 3:
         break;
