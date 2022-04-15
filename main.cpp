@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#define LIMITE 1000
 
 using namespace std;
 
@@ -16,22 +17,18 @@ typedef struct
     int nota;
 }
 Leitura;
-/*
-void criar_arquivo()
+
+int criar_arquivo()
 {
     ofstream arquivo ("arquivo.csv", ios::app);
-    arquivo.open("arquivo.csv");
     if (!arquivo)
     {
-        cout << "O arquivo nao pode ser aberto!" << endl;
-    }
-    else
-    {
-        cout << "Arquivo criado com sucesso!" << endl;
+        cout << "ERRO na criacao do arquivo" << endl;
+        return -1;
     }
     arquivo.close();  
 }
-*/
+
 /**
  * @brief
  * Abaixo deve se inserir um linha de registro com o uso da struct 
@@ -118,58 +115,58 @@ void incluir_registro()
 
     }
 }
-/*
-void excluir_registro()
-{
-}
-void buscar_lendo()
-{
-}
-void editar_leitura()
-{
-}
 
 int mostrar_registro()
 {
     string linha;
-    cout << "Abrindo o arquivo para leitura" << endl;
-    ifstream arquivo ("arquivo.csv"); // abre o arquivo para leitura
+    ifstream arquivo ("arquivo.csv");
     if (!arquivo){
         cout << "O arquivo nao pode ser aberto!" << endl;
     return -1;
     }
+    cout << "SBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
     while (!arquivo.eof()){
-        getline(arquivo, linha);
-    cout << linha << endl;
+        getline(arquivo, linha, ',');
+    cout << linha << "   ";
     }
     arquivo.close();
     return 0;
 }
 
-void exportar_txt()
-{
-}
-void excluir_registro()
-{
-}
-*/
-
 void menu()
 {
     int selecao;
     cout << "1) Incluir Registro" << endl;
-    cout << "2) Buscar lendo" << endl;
+    cout << "2) Buscar Leitura" << endl;
     cout << "3) Editar Leitura" << endl;
     cout << "4) Mostrar Registro" << endl;
     cout << "5) Exportar para .txt" << endl;
     cout << "6) Excluir este arquivo" << endl;
     cin >> selecao;
-    incluir_registro();
+    switch (selecao)
+    {
+    case 1:
+
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    case 4:
+        mostrar_registro();
+        break;
+    case 5:
+        break;
+    case 6:
+        break;
+    default:
+        break;
+    }
 }
 
 int main()
 {
-    //criar_arquivo();
+    criar_arquivo();
     menu();
     return 0;
 }
