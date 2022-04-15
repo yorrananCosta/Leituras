@@ -264,6 +264,12 @@ int alterar_item(Leitura *livro, int tamanho)
     return 0;
 }
 
+void excluir_arquivo(Leitura *livro, int tamanho)
+{
+    delete[] livro;
+    salvar_alteracoes(livro, tamanho);
+}
+
 void menu(Leitura *livro, int tamanho)
 {
     int selecao;
@@ -291,7 +297,7 @@ void menu(Leitura *livro, int tamanho)
     case 5:
         break;
     case 6:
-
+        excluir_arquivo(livro, tamanho);
         break;
     default:
         break;
