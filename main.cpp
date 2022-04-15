@@ -55,65 +55,42 @@ int contador_de_linhas(){
 
 void incluir_registro()
 {
-    string isbn_13_s;
-    string isbn_10_s;
-    string nome_lendo;
-    string paginas_lendo_s;
-    string ano_s;
+    string linha;
+    string isbn13;
+    string isbn10;
+    string nome_livro;
+    string paginas;
+    string ano_publicacacao;
     string idioma;
     string autor;
-    string editora;
-    string nota_s;
-    Leitura *lendo ;
-    int tamanho;
-    tamanho = contador_de_linhas();
-    lendo =  new (nothrow) Leitura[tamanho];;
-    ifstream arquivo("arquivo.csv");
-
-    if(!arquivo.is_open()) 
+    string nome_editora;
+    string nota;
+    ofstream arquivo ("arquivo.csv", ios::app | ios::out);
+    if(!arquivo)
     {
-        cout << "Erro ao abrir o arquivo!" << '\n';
+        cout << "falha ao abrir o arquivo!" << endl;
     }
-    int posicao=0;
-   
-    while(arquivo.peek()!=EOF)
-    {
-        cout << "include..." << endl;
-        getline(arquivo, isbn_13_s, ',');
-        getline(arquivo, isbn_10_s,',');
-        getline(arquivo, nome_lendo,',');
-        getline(arquivo, paginas_lendo_s,',');
-        getline(arquivo, ano_s,',');
-        getline(arquivo, idioma,',');
-        getline(arquivo, autor,',');
-        getline(arquivo, editora,',');
-        getline(arquivo, nota_s);
-
-        //note a conversao de string para inteiro (codigo) e string para float (preco)
-        lendo[posicao].isbn_13 = stoi(isbn_13_s);
-        lendo[posicao].isbn_10 = stoi(isbn_10_s);
-        lendo[posicao].nome_lendo = nome_lendo;
-        lendo[posicao].paginas_lendo = stoi(paginas_lendo_s);
-        lendo[posicao].ano = stoi(ano_s);
-        lendo[posicao].idioma = idioma;
-        lendo[posicao].editora = editora;
-        lendo[posicao].nota = stoi(nota_s);
-        posicao++;
-    
-    }
-
-    for (int i = 0; i < tamanho; i++){
-
-        cout << lendo[i].isbn_13 << endl;
-        cout << lendo[i].isbn_10 << endl;
-        cout << lendo[i].nome_lendo << endl;
-        cout << lendo[i].paginas_lendo << endl;
-        cout << lendo[i].ano << endl;
-        cout << lendo[i].idioma << endl;        
-        cout << lendo[i].editora << endl;
-        cout << lendo[i].nota << endl;
-
-    }
+    cout << "Digite o ISBN 13: " << endl;
+    cin >> isbn13;
+    cout << "Digite o ISBN 10: " << endl;
+    cin >> isbn10;
+    cout << "Digite o nome do livro: " << endl;
+    getline(cin, nome_livro);
+    cout << "Digite o numero de paginas do livro: " << endl;
+    cin >> paginas;
+    cout << "Digite o ano de publicacao: " << endl; 
+    cin >> ano_publicacacao;
+    cout << "Digite o idioma (PT = portugues, EN = ingles, ES = espanhol): " << endl;
+    cin >> idioma;
+    cout << "Digite o nome do autor: "<< endl;
+    getline(cin, autor);
+    cout << "Digite o nome da editora: " << endl;
+    getline(cin, nome_editora);
+    cout << "Digite sua nota de 0 a 10: " << endl;
+    cin >> nota;
+    arquivo << isbn13 << ',' << isbn10 << ',' << nome_livro << ',' << paginas << ',' << ano_publicacacao << ','
+    << idioma << ',' << autor << ',' << nome_editora << ',' << nota << endl;
+    arquivo.close();
 }
 
 int mostrar_registro()
@@ -124,7 +101,7 @@ int mostrar_registro()
         cout << "O arquivo nao pode ser aberto!" << endl;
     return -1;
     }
-    cout << "SBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
+    cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
     while (!arquivo.eof()){
         getline(arquivo, linha, ',');
     cout << linha << "   ";
@@ -146,7 +123,7 @@ void menu()
     switch (selecao)
     {
     case 1:
-
+        incluir_registro();
         break;
     case 2:
         break;
