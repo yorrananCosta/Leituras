@@ -1,0 +1,6 @@
+ISBN 13    ISBN 10    PAGINAS    NOME    ANO DE PUBLICACAO    IDIOMA    AUTOR    EDITORA   NOTA 
+9780829707977    829707972    Por Esta Cruz te Matarei    205    Por Esta Cruz te Matarei    1979    PT    Bruce Olson    Vida    7
+9788578601959    8578601955    Os Quatro Amores    189    Os Quatro Amores    2017    PT    C.S. Lewis    Thomas Nelson    8
+9788573263350    8573263350    Noites Brancas    96    Noites Brancas    2009    PT    Fiodor Dostoievski    34    10
+9786586064100    6586064104    Fundacao    318    Fundacao    2020    PT    Isaac Asimov    Aleph    9
+9788576574224    8576574225O    Fim da Eternidade    256    Fim da Eternidade    2019    PT    Isaac Asimov    Aleph    10

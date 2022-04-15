@@ -32,6 +32,17 @@ int criar_arquivo()
     arquivo.close();  
 }
 
+int criar_arquivo_txt()
+{
+    ofstream exportacao ("C:/Users/Lenovo/Desktop/exportado.txt");
+    if (!exportacao)
+    {
+        cout << "ERRO na criacao do arquivo de exportacao" << endl;
+        return -1;
+    }
+    exportacao.close();  
+}
+
 int contador_de_linhas()
 {
     string linha;
@@ -264,13 +275,61 @@ int alterar_item(Leitura *livro, int tamanho)
     return 0;
 }
 
+void exportar_txt(Leitura *arquivos, int tamanho)
+{
+    criar_arquivo_txt();
+    ofstream exportacao("C:/Users/Lenovo/Desktop/exportado.txt", ios::out);
+    if(!exportacao.is_open())
+    {
+        cout << "Erro ao abrir arquivo para exportar" << endl;
+    }
+    exportacao << "ISBN 13    ISBN 10    PAGINAS    NOME    ANO DE PUBLICACAO    IDIOMA    AUTOR    EDITORA   NOTA " << endl;    
+    for (int i = 0; i < tamanho; i++)
+    {
+        exportacao << arquivos[i]->isbn_13 << "    "
+            << arquivos[i]->isbn_10 << "    "
+            << arquivos[i]->nome_lendo << "    "
+            << arquivos[i]->paginas_lendo << "    " 
+            << arquivos[i]->nome_lendo << "    " 
+            << arquivos[i]->ano << "    " 
+            << arquivos[i]->idioma << "    " 
+            << arquivos[i]->autor << "    " 
+            << arquivos[i]->editora << "    " 
+            << arquivos[i]->nota << endl;
+    }
+    
+}
+
+int troca(Leitura *livro_a, Leitura *livro_b)
+{
+    int auxiliar;
+    auxiliar = livro_a;
+    livro_a = livro_b;
+    livro_b = auxiliar;
+}
+
+int ordenar_arquivos(Leitura *livros, int tamanho)
+{
+    int i, j;
+    for(i = tamanho -1; i > 0; i--)
+    {
+        for(j = 0; j < i; j++)
+        {
+            if(livros[j] > livros[j+1])
+            {
+                troca(&livros[j], &livros[j+1]);
+            }
+        }
+    }
+}
+
 void excluir_arquivo(Leitura *livro, int tamanho)
 {
     delete[] livro;
     salvar_alteracoes(livro, tamanho);
 }
 
-void menu(Leitura *livro, int tamanho)
+int menu(Leitura *livro, int tamanho)
 {
     int selecao;
     cout << "1) Incluir Registro" << endl;
@@ -279,6 +338,7 @@ void menu(Leitura *livro, int tamanho)
     cout << "4) Mostrar Registro" << endl;
     cout << "5) Exportar para .txt" << endl;
     cout << "6) Excluir este arquivo" << endl;
+    cout << "7) Fechar programa" << endl;
     cin >> selecao;
     switch (selecao)
     {
@@ -295,11 +355,15 @@ void menu(Leitura *livro, int tamanho)
         mostrar_registros(livro, tamanho);
         break;
     case 5:
+    exportar_txt(livro, tamanho);
         break;
     case 6:
         excluir_arquivo(livro, tamanho);
         break;
+    case 7:
+        return EOF;
     default:
+    return -1;
         break;
     }
 }
@@ -311,6 +375,6 @@ int main()
     livro =  new (nothrow) Leitura[tamanho];
     criar_arquivo();
     ler_registros(livro, tamanho);
-    menu(livro, tamanho);
+    while(menu(livro, tamanho) != EOF){}
     return 0;
 }
