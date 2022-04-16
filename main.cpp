@@ -6,20 +6,21 @@
 using namespace std;
 using std::stoi;
 
+
 typedef struct
 {
+    int codigo_perfil_para_livro;
     string isbn_13;
     string isbn_10;
     string nome_lendo;
-    string paginas_lendo;
-    string ano;
+    int paginas_lendo;
+    int ano;
     string idioma;
     string autor;
     string editora;
-    string nota;
+    int nota;
 }
 Leitura[LIMITE];
-
 
 int criar_arquivo()
 {
@@ -63,6 +64,7 @@ int contador_de_linhas()
 
 void ler_registros(Leitura *livro, int tamanho)
 {
+    string codigo;
     string isbn13;
     string isbn10;
     string nome_livro;
@@ -79,9 +81,9 @@ void ler_registros(Leitura *livro, int tamanho)
         cout << "Erro ao abrir o arquivo" << endl;
     }
 
-    while(arquivo.peek()!=EOF)
+    while(arquivo.peek() != EOF)
     {
-    
+    getline(arquivo, codigo,',');
     getline(arquivo, isbn13,',');
     getline(arquivo, isbn10,',');
     getline(arquivo, nome_livro,',');
@@ -91,17 +93,16 @@ void ler_registros(Leitura *livro, int tamanho)
     getline(arquivo, autor,',');
     getline(arquivo, nome_editora,',');
     getline(arquivo, nota);
-
-
+    livro[posicao]->codigo_perfil_para_livro = stoi(codigo);
     livro[posicao]->isbn_13 = isbn13;
     livro[posicao]->isbn_10 = isbn10;
     livro[posicao]->nome_lendo = nome_livro;
-    livro[posicao]->paginas_lendo = paginas;
-    livro[posicao]->ano = ano_publicacacao;
+    livro[posicao]->paginas_lendo = stoi(paginas);
+    livro[posicao]->ano = stoi(ano_publicacacao);
     livro[posicao]->idioma = idioma;
     livro[posicao]->autor = autor;
     livro[posicao]->editora = nome_editora;
-    livro[posicao]->nota = nota;
+    livro[posicao]->nota = stoi(nota);
     posicao++;
   
   }
@@ -113,7 +114,8 @@ void salvar_alteracoes(Leitura *livro, int tamanho)
     ofstream arquivo ("arquivo.csv", ios::out);
     for (int i = 0; i < tamanho; i++)
     {
-        arquivo << livro[i]->isbn_13 << ','
+        arquivo << livro[i]->codigo_perfil_para_livro << ','
+            << livro[i]->isbn_13 << ','
             << livro[i]->isbn_10 << ','
             << livro[i]->nome_lendo << ','
             << livro[i]->paginas_lendo << ','
@@ -135,6 +137,7 @@ void mostrar_registros(Leitura *livro, int tamanho)
     cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
     for (int i = 0; i < tamanho; i++)
     {
+        cout << livro[i]->codigo_perfil_para_livro << "  ";
         cout << livro[i]->isbn_13 << "  ";
         cout << livro[i]->isbn_10 << "  ";
         cout << livro[i]->nome_lendo << "  ";
@@ -149,6 +152,7 @@ void mostrar_registros(Leitura *livro, int tamanho)
 
 void incluir_registro()
 {
+    string codigo;
     string isbn13;
     string isbn10;
     string nome_livro;
@@ -181,7 +185,8 @@ void incluir_registro()
     getline(cin, nome_editora);
     cout << "Digite sua nota de 0 a 10: " << endl;
     cin >> nota;
-    arquivo << isbn13 << ',' << isbn10 << ',' << nome_livro << ',' << paginas << ',' << ano_publicacacao << ','
+    codigo = to_string(contador_de_linhas()+1);
+    arquivo << codigo << ',' << isbn13 << ',' << isbn10 << ',' << nome_livro << ',' << paginas << ',' << ano_publicacacao << ','
     << idioma << ',' << autor << ',' << nome_editora << ',' << nota << endl;
     arquivo.close();
 }
@@ -206,6 +211,7 @@ void mostrar_pesquisa(Leitura *livro, int tamanho)
     cin >> isbn_13;
     int posicao = buscar_isbn_13(livro, tamanho, isbn_13);
     cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
+    cout << livro[posicao]->codigo_perfil_para_livro << "  ";
     cout << livro[posicao]->isbn_13 << "  ";
     cout << livro[posicao]->isbn_10 << "  ";
     cout << livro[posicao]->nome_lendo << "  ";
@@ -249,10 +255,10 @@ int alterar_item(Leitura *livro, int tamanho)
         livro[indice]->nome_lendo = alteracao;
         break;
     case 4:
-        livro[indice]->paginas_lendo = alteracao;
+        livro[indice]->paginas_lendo = stoi(alteracao);
         break;
     case 5:
-        livro[indice]->ano = alteracao;
+        livro[indice]->ano = stoi(alteracao);
         break;
     case 6:
         livro[indice]->idioma = alteracao;
@@ -264,7 +270,7 @@ int alterar_item(Leitura *livro, int tamanho)
         livro[indice]->editora = alteracao;
         break;
     case 9:
-        livro[indice]->nota = alteracao;
+        livro[indice]->nota = stoi(alteracao);
         break;
 
     default:
@@ -286,7 +292,8 @@ void exportar_txt(Leitura *arquivos, int tamanho)
     exportacao << "ISBN 13    ISBN 10    PAGINAS    NOME    ANO DE PUBLICACAO    IDIOMA    AUTOR    EDITORA   NOTA " << endl;    
     for (int i = 0; i < tamanho; i++)
     {
-        exportacao << arquivos[i]->isbn_13 << "    "
+        exportacao << arquivos[i]->codigo_perfil_para_livro << "    "
+            << arquivos[i]->isbn_13 << "    "
             << arquivos[i]->isbn_10 << "    "
             << arquivos[i]->nome_lendo << "    "
             << arquivos[i]->paginas_lendo << "    " 
@@ -300,27 +307,83 @@ void exportar_txt(Leitura *arquivos, int tamanho)
     
 }
 
-int troca(Leitura *livro_a, Leitura *livro_b)
+int troca(Leitura *livro_a, Leitura *livro_b, int j, int k)
 {
-    int auxiliar;
-    auxiliar = livro_a;
-    livro_a = livro_b;
-    livro_b = auxiliar;
+    int codigo_perfil_para_livro = livro_a[j]->codigo_perfil_para_livro;
+    string isbn_13 = livro_a[j]->isbn_13;
+    string isbn_10 = livro_a[j]->isbn_10;
+    string nome_lendo = livro_a[j]->nome_lendo;
+    int paginas_lendo = livro_a[j]->paginas_lendo;
+    int ano = livro_a[j]->ano;
+    string idioma = livro_a[j]->idioma;
+    string autor = livro_a[j]->autor;
+    string editora = livro_a[j]->editora;
+    int nota = livro_a[j]->nota;
+    livro_a[j]->codigo_perfil_para_livro = livro_b[k]->codigo_perfil_para_livro;
+    livro_a[j]->isbn_13 = livro_b[k]->isbn_13;
+    livro_a[j]->isbn_10 = livro_b[k]->isbn_10;
+    livro_a[j]->nome_lendo = livro_b[k]->nome_lendo;
+    livro_a[j]->paginas_lendo = livro_b[k]->paginas_lendo;
+    livro_a[j]->ano = livro_b[k]->ano;
+    livro_a[j]->idioma = livro_b[k]->idioma;
+    livro_a[j]->editora = livro_b[k]->editora;
+    livro_a[j]->nota = livro_b[k]->nota;
+    livro_b[k]->codigo_perfil_para_livro = codigo_perfil_para_livro;
+    livro_b[k]->isbn_13 = isbn_13;
+    livro_b[k]->isbn_10 = isbn_10;
+    livro_b[k]->nome_lendo = nome_lendo;
+    livro_b[k]->paginas_lendo = paginas_lendo;
+    livro_b[k]->ano = ano;
+    livro_b[k]->idioma = idioma;
+    livro_b[k]->autor = autor;
+    livro_b[k]->editora = editora;
+    livro_b[k]->nota = nota;
 }
 
-int ordenar_arquivos(Leitura *livros, int tamanho)
+void apagar_registro(Leitura *registro, int indice)
 {
-    int i, j;
-    for(i = tamanho -1; i > 0; i--)
+    registro[indice]->codigo_perfil_para_livro = 0;
+    registro[indice]->isbn_13 = '\0';
+    registro[indice]->isbn_10 = '\0';
+    registro[indice]->nome_lendo = '\0';
+    registro[indice]->paginas_lendo = 0;
+    registro[indice]->ano = 0;
+    registro[indice]->idioma = '\0';
+    registro[indice]->autor = '\0';
+    registro[indice]->editora = '\0';
+    registro[indice]->nota = 0;
+}
+
+void ordenar_arquivos(Leitura *livros, int tamanho)
+{
+    int i = tamanho-1, j;
+    for(i; i > 0; i--)
     {
         for(j = 0; j < i; j++)
         {
-            if(livros[j] > livros[j+1])
+            if(livros[j]->codigo_perfil_para_livro > livros[j+1]->codigo_perfil_para_livro)
             {
-                troca(&livros[j], &livros[j+1]);
+                troca(livros, livros, j, j+1);
             }
         }
     }
+    salvar_alteracoes(livros, tamanho);
+}
+
+void verificacao_de_integridade(Leitura *livros, int tamanho)
+{
+    int i = tamanho-1, j;
+    for(i; i > 0; i--)
+    {
+        for(j = 0; j < i; j++)
+        {
+            if(livros[j]->codigo_perfil_para_livro == livros[j+1]->codigo_perfil_para_livro)
+            {
+                apagar_registro(livros, j+1);
+            }
+        }
+    }
+    salvar_alteracoes(livros, tamanho);
 }
 
 void excluir_arquivo(Leitura *livro, int tamanho)
@@ -338,7 +401,9 @@ int menu(Leitura *livro, int tamanho)
     cout << "4) Mostrar Registro" << endl;
     cout << "5) Exportar para .txt" << endl;
     cout << "6) Excluir este arquivo" << endl;
-    cout << "7) Fechar programa" << endl;
+    cout << "7) Ordenar arquivos" << endl;
+    cout << "8) Verificar integridade" << endl;
+    cout << "9) Fechar programa" << endl;
     cin >> selecao;
     switch (selecao)
     {
@@ -361,6 +426,11 @@ int menu(Leitura *livro, int tamanho)
         excluir_arquivo(livro, tamanho);
         break;
     case 7:
+        ordenar_arquivos(livro, tamanho);
+        break;
+    case 8:
+        verificacao_de_integridade(livro, tamanho);
+    case 9:
         return EOF;
     default:
     return -1;
