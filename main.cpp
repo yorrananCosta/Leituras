@@ -35,7 +35,7 @@ int criar_arquivo()
 
 int criar_arquivo_txt()
 {
-    ofstream exportacao ("C:/Users/Lenovo/Desktop/exportado.txt");
+    ofstream exportacao ("exportado.txt");
     if (!exportacao)
     {
         cout << "ERRO na criacao do arquivo de exportacao" << endl;
@@ -108,7 +108,6 @@ void ler_registros(Leitura *livro, int tamanho)
   }
 
 }
-
 void salvar_alteracoes(Leitura *livro, int tamanho)
 {
     ofstream arquivo ("arquivo.csv", ios::out);
@@ -125,6 +124,7 @@ void salvar_alteracoes(Leitura *livro, int tamanho)
             << livro[i]->editora << ','
             << livro[i]->nota << endl;
     }
+    arquivo.close();
 }  
 
 void mostrar_registros(Leitura *livro, int tamanho)
@@ -134,7 +134,7 @@ void mostrar_registros(Leitura *livro, int tamanho)
     {
         cout << "Erro ao abrir o arquivo" << endl;
     }
-    cout << "ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
+    cout << "Codigo ISBN 13    ISBN 10    Nome    Paginas   Ano    Idioma    Editora     Nota " << endl;
     for (int i = 0; i < tamanho; i++)
     {
         cout << livro[i]->codigo_perfil_para_livro << "  ";
@@ -150,7 +150,7 @@ void mostrar_registros(Leitura *livro, int tamanho)
     }
 }
 
-void incluir_registro()
+void incluir_registro(Leitura *livro, int tamanho)
 {
     string codigo;
     string isbn13;
@@ -172,6 +172,8 @@ void incluir_registro()
     cout << "Digite o ISBN 10: " << endl;
     cin >> isbn10;
     cout << "Digite o nome do livro: " << endl;
+    cin.clear();
+    cin.ignore();
     getline(cin, nome_livro);
     cout << "Digite o numero de paginas do livro: " << endl;
     cin >> paginas;
@@ -180,14 +182,19 @@ void incluir_registro()
     cout << "Digite o idioma (PT = portugues, EN = ingles, ES = espanhol): " << endl;
     cin >> idioma;
     cout << "Digite o nome do autor: "<< endl;
+    cin.clear();
+    cin.ignore();
     getline(cin, autor);
     cout << "Digite o nome da editora: " << endl;
+    cin.clear();
     getline(cin, nome_editora);
+    cin.clear();
     cout << "Digite sua nota de 0 a 10: " << endl;
     cin >> nota;
     codigo = to_string(contador_de_linhas()+1);
     arquivo << codigo << ',' << isbn13 << ',' << isbn10 << ',' << nome_livro << ',' << paginas << ',' << ano_publicacacao << ','
     << idioma << ',' << autor << ',' << nome_editora << ',' << nota << endl;
+    ler_registros(livro, tamanho);
     arquivo.close();
 }
 
@@ -234,7 +241,7 @@ int alterar_item(Leitura *livro, int tamanho)
     cout << "1) ISBN 13" << endl;
     cout << "2) ISBN 10" << endl;
     cout << "3) Nome do livro" << endl;
-    cout << "4) Páginas" << endl;
+    cout << "4) Paginas" << endl;
     cout << "5) Ano de publicacao" << endl;
     cout << "6) Idioma" << endl;
     cout << "7) Autor" << endl;
@@ -242,37 +249,46 @@ int alterar_item(Leitura *livro, int tamanho)
     cout << "9) Nota" << endl;
     cin >> opcao;
     cout << "Qual o novo valor para o item?" << endl;
-    cin >> alteracao;
+    cin.ignore();
+    getline(cin, alteracao);
     switch (opcao)
     {
     case 1:
         livro[indice]->isbn_13 = alteracao;
+        salvar_alteracoes(livro, tamanho);
         break;
     case 2:
         livro[indice]->isbn_10 = alteracao;
+        salvar_alteracoes(livro, tamanho);
         break;
     case 3:
         livro[indice]->nome_lendo = alteracao;
+        salvar_alteracoes(livro, tamanho);
         break;
     case 4:
         livro[indice]->paginas_lendo = stoi(alteracao);
+        salvar_alteracoes(livro, tamanho);
         break;
     case 5:
         livro[indice]->ano = stoi(alteracao);
+        salvar_alteracoes(livro, tamanho);
         break;
     case 6:
         livro[indice]->idioma = alteracao;
+        salvar_alteracoes(livro, tamanho);
         break;
     case 7:
         livro[indice]->autor = alteracao;
+        salvar_alteracoes(livro, tamanho);
         break;
     case 8:
         livro[indice]->editora = alteracao;
+        salvar_alteracoes(livro, tamanho);
         break;
     case 9:
         livro[indice]->nota = stoi(alteracao);
+        salvar_alteracoes(livro, tamanho);
         break;
-
     default:
         return -1;
         break;
@@ -284,12 +300,12 @@ int alterar_item(Leitura *livro, int tamanho)
 void exportar_txt(Leitura *arquivos, int tamanho)
 {
     criar_arquivo_txt();
-    ofstream exportacao("C:/Users/Lenovo/Desktop/exportado.txt", ios::out);
+    ofstream exportacao("exportado.txt", ios::out);
     if(!exportacao.is_open())
     {
         cout << "Erro ao abrir arquivo para exportar" << endl;
     }
-    exportacao << "ISBN 13    ISBN 10    PAGINAS    NOME    ANO DE PUBLICACAO    IDIOMA    AUTOR    EDITORA   NOTA " << endl;    
+    exportacao << " CODIGO ISBN 13    ISBN 10    PAGINAS    NOME    ANO DE PUBLICACAO    IDIOMA    AUTOR    EDITORA   NOTA " << endl;    
     for (int i = 0; i < tamanho; i++)
     {
         exportacao << arquivos[i]->codigo_perfil_para_livro << "    "
@@ -370,8 +386,9 @@ void ordenar_arquivos(Leitura *livros, int tamanho)
     salvar_alteracoes(livros, tamanho);
 }
 
-void verificacao_de_integridade(Leitura *livros, int tamanho)
+int verificacao_de_integridade(Leitura *livros, int tamanho)
 {
+    cout << "Atencao! O aplicativo sera fechado apos a operacao. Continuar? (S/N)" << endl;
     int i = tamanho-1, j;
     for(i; i > 0; i--)
     {
@@ -384,6 +401,7 @@ void verificacao_de_integridade(Leitura *livros, int tamanho)
         }
     }
     salvar_alteracoes(livros, tamanho);
+  
 }
 
 void excluir_arquivo(Leitura *livro, int tamanho)
@@ -408,32 +426,37 @@ int menu(Leitura *livro, int tamanho)
     switch (selecao)
     {
     case 1:
-        incluir_registro();
+        incluir_registro(livro, tamanho);
         break;
     case 2:
         mostrar_pesquisa(livro, tamanho);
         break;
     case 3:
         alterar_item(livro, tamanho);
+        cout << "Item alterado com suceso!" << endl;
         break;
     case 4:
         mostrar_registros(livro, tamanho);
         break;
     case 5:
-    exportar_txt(livro, tamanho);
+        exportar_txt(livro, tamanho);
+        cout << "arquivo exportado!" << endl;
         break;
     case 6:
         excluir_arquivo(livro, tamanho);
+        cout << "Arquivo excluido!" << endl;
         break;
     case 7:
         ordenar_arquivos(livro, tamanho);
+        cout << "Ordenacao realizada!" << endl;
         break;
     case 8:
         verificacao_de_integridade(livro, tamanho);
     case 9:
         return EOF;
+        break;
     default:
-    return -1;
+        return -1;
         break;
     }
 }
